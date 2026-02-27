@@ -1,0 +1,31 @@
+<h3>Nuevo usuario</h3>
+
+<form method="POST">
+
+<input name="username"
+class="form-control mb-2"
+placeholder="Usuario">
+
+<input name="password"
+type="password"
+class="form-control mb-2"
+placeholder="Password">
+
+<select name="role_id"
+class="form-control mb-2">
+
+<% roles.forEach(r=>{ %>
+
+<option value="<%= r.id %>">
+<%= r.name %>
+</option>
+
+<% }) %>
+
+</select>
+
+<button class="btn btn-danger">
+Guardar
+</button>
+
+</form>

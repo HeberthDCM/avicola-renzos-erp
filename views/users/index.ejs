@@ -1,25 +1,38 @@
-<% layout('layouts/main') %>
+<h3>Usuarios</h3>
 
-<a href="/users/create" class="btn btn-danger mb-2">Nuevo Usuario</a>
+<a href="/users/create" class="btn btn-danger mb-2">
+Nuevo
+</a>
 
 <table class="table table-bordered">
+
 <tr>
 <th>ID</th>
 <th>Usuario</th>
 <th>Rol</th>
-<th>Acciones</th>
+<th></th>
 </tr>
 
 <% users.forEach(u=>{ %>
+
 <tr>
+
 <td><%= u.id %></td>
 <td><%= u.username %></td>
 <td><%= u.role %></td>
+
 <td>
-<form action="/users/<%= u.id %>?_method=DELETE" method="POST">
-<button class="btn btn-dark btn-sm">Eliminar</button>
-</form>
+
+<a href="/users/edit/<%= u.id %>"
+class="btn btn-sm btn-warning">Editar</a>
+
+<a href="/users/delete/<%= u.id %>"
+class="btn btn-sm btn-danger">Eliminar</a>
+
 </td>
+
 </tr>
+
 <% }) %>
+
 </table>

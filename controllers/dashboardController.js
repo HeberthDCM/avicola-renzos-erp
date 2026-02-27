@@ -1,6 +1,6 @@
 const db = require('../config/db')
 
-exports.index = async (req,res)=>{
+/* exports.index = async (req,res)=>{
     const [[{total}]] = await db.query(`
         SELECT IFNULL(SUM(amount),0) as total 
         FROM cash_movements 
@@ -9,13 +9,13 @@ exports.index = async (req,res)=>{
 
     res.render('dashboard',{totalCaja:total})
 }
+ */
 
-
-/* exports.index = (req,res)=>{
+exports.index = (req,res)=>{
     res.render('layouts/main',{
         body: require('ejs').render(
             require('fs').readFileSync('./views/dashboard/index.ejs','utf8'),
             { user: req.session.user }
         )
     })
-} */
+}

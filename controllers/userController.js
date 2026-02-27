@@ -1,37 +1,69 @@
-const db = require('../config/db')
+const User = require('../models/User')
+const Role = require('../models/Role')
 const bcrypt = require('bcryptjs')
 const audit = require('../middlewares/auditMiddleware')
 
-exports.index = async (req,res)=>{
-    const [users] = await db.query(`
-        SELECT u.*, r.name as role 
-        FROM users u 
-        JOIN roles r ON r.id=u.role_id
-    `)
-    res.render('users/index',{users})
+exports.index = async(req,res)=>{
+
+const users = await User.getAll()
+
+res.render('users/index',{users})
+
 }
 
-exports.createView = async (req,res)=>{
-    const [roles] = await db.query("SELECT * FROM roles")
-    res.render('users/form',{roles})
+exports.createView = async(req,res)=>{
+
+const roles = await Role.getAll()
+
+res.render('users/create',{roles})
+
 }
 
-exports.store = async (req,res)=>{
-    const {username,password,role_id} = req.body
-    const hash = await bcrypt.hash(password,10)
+exports.create = async(req,res)=>{
 
-    const [result] = await db.query(`
-        INSERT INTO users (company_id,role_id,username,password)
-        VALUES (1,?,?,?)`,
-        [role_id,username,hash]
-    )
+const hash = await bcrypt.hash(req.body.password,10)
 
-    await audit(req.session.user.id,'CREATE','users',result.insertId)
+await User.create({
 
-    res.redirect('/users')
+company_id:1,
+role_id:req.body.role_id,
+username:req.body.username,
+password:hash
+
+})
+
+await audit(req.session.user.id,"create","users",0)
+
+res.redirect('/users')
+
 }
 
-exports.delete = async (req,res)=>{
-    await db.query("DELETE FROM users WHERE id=?",[req.params.id])
-    res.redirect('/users')
+exports.editView = async(req,res)=>{
+
+const user = await User.getById(req.params.id)
+
+const roles = await Role.getAll()
+
+res.render('users/edit',{user,roles})
+
+}
+
+exports.update = async(req,res)=>{
+
+await User.update(req.params.id,req.body)
+
+await audit(req.session.user.id,"update","users",req.params.id)
+
+res.redirect('/users')
+
+}
+
+exports.delete = async(req,res)=>{
+
+await User.delete(req.params.id)
+
+await audit(req.session.user.id,"delete","users",req.params.id)
+
+res.redirect('/users')
+
 }
